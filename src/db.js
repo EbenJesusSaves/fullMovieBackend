@@ -3,11 +3,8 @@ import pg from "pg";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-const connectionString =
-  "postgresql://freewatch_owner:Mdi5ZwHTYz6h@ep-shrill-lake-a2if0mbu-pooler.eu-central-1.aws.neon.tech/freewatch?sslmode=require";
-
 const pool = new pg.Pool({
-  connectionString,
+  connectionString: process.env.connectionString,
 });
 
 export const addUser = async (req, res) => {
