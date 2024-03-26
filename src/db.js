@@ -1,10 +1,10 @@
 // app.js
-const postgres = require("postgres");
+const { Pool } = require("pg");
 require("dotenv").config();
 
 let { PGHOST, PGDATABASE, PGUSER, PGPASSWORD, ENDPOINT_ID } = process.env;
 
-const sql = postgres({
+const pool = new Pool({
   host: PGHOST,
   database: PGDATABASE,
   username: PGUSER,
@@ -17,7 +17,12 @@ const sql = postgres({
 });
 
 async function getPgVersion() {
-  const result = await sql`select version()`;
+  const result = await pool.query(`CREATE TABLE user (
+  id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  name VARCHAR(200) NOT NULL,
+  email VARCHAR(250) NOT NULL,
+  profile TEXT
+    );`);
   console.log(result);
 }
 
