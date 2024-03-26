@@ -1,5 +1,6 @@
 import express from "express";
 import morgan from "morgan";
+import { addUser } from "./db.js";
 
 const app = express();
 
@@ -14,3 +15,5 @@ app.get("/", (req, res) => {
 });
 
 export default app;
+
+app.post("/createUser", addUser);

@@ -1,29 +1,38 @@
 // app.js
-const { Pool } = require("pg");
-require("dotenv").config();
+import pg from "pg";
+import * as dotenv from "dotenv";
+dotenv.config();
 
-let { PGHOST, PGDATABASE, PGUSER, PGPASSWORD, ENDPOINT_ID } = process.env;
+const connectionString =
+  "postgresql://freewatch_owner:Mdi5ZwHTYz6h@ep-shrill-lake-a2if0mbu-pooler.eu-central-1.aws.neon.tech/freewatch?sslmode=require";
 
-const pool = new Pool({
-  host: PGHOST,
-  database: PGDATABASE,
-  username: PGUSER,
-  password: PGPASSWORD,
-  port: 5432,
-  ssl: "require",
-  connection: {
-    options: `project=${ENDPOINT_ID}`,
-  },
+const pool = new pg.Pool({
+  connectionString,
 });
 
-async function getPgVersion() {
-  const result = await pool.query(`CREATE TABLE user (
-  id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  name VARCHAR(200) NOT NULL,
-  email VARCHAR(250) NOT NULL,
-  profile TEXT
-    );`);
-  console.log(result);
-}
-
-getPgVersion();
+export const addUser = async (req, res) => {
+  console.log(req.body.username);
+  try {
+    const { rows } = await pool.query(
+      `
+        INSERT INTO userprofile
+        (
+            username,
+            email,
+            profile
+        )
+        VALUES
+        (
+            $1,
+            $2,
+            $3
+        );
+    `,
+      [req.body.username, req.body.email, req.body.profile]
+    );
+    console.log(rows);
+    res.status(200).json({ message: rows });
+  } catch (error) {
+    console.log(error);
+  }
+};
