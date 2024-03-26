@@ -76,3 +76,31 @@ export const signIn = async (req, res, next) => {
     });
   } catch (error) {}
 };
+export const comment = async (req, res, next) => {
+  try {
+    const { rows } = await pool.query(
+      `INSERT INTO comments 
+      (
+       
+        booy,
+        comment_id
+      ) 
+      VALUES (
+          $1,
+          $2
+         
+      )
+      RETURNING * ; `,
+      [req.body.text, req.body.user_id]
+    );
+
+    res.status(200).json({
+      data: { rows },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      data: error,
+    });
+  }
+};
