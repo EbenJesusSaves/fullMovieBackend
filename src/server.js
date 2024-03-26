@@ -1,6 +1,7 @@
-import express from "express";
+import express, { Router } from "express";
 import morgan from "morgan";
-import { addUser, alterTable } from "./db.js";
+import { addUser, signIn } from "./db.js";
+import { protect } from "./modules/auth.js";
 
 const app = express();
 
@@ -9,7 +10,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-  alterTable();
   console.log("first backend App created");
   res.status(200);
   res.json({ message: "hello" });
@@ -17,4 +17,6 @@ app.get("/", (req, res) => {
 
 export default app;
 
+app.use("/api", protect, router);
 app.post("/createUser", addUser);
+app.post("/signIn", signIn);
