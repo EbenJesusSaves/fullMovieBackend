@@ -1,6 +1,6 @@
 import express from "express";
 import morgan from "morgan";
-import { addUser } from "./db.js";
+import { addUser, alterTable } from "./db.js";
 
 const app = express();
 
@@ -9,6 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
+  alterTable();
   console.log("first backend App created");
   res.status(200);
   res.json({ message: "hello" });
