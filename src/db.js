@@ -139,3 +139,117 @@ export const getUserComment = async (req, res, next) => {
     });
   }
 };
+
+export const updateUserProfile = async (req, res) => {
+  const { id, username, email, profile } = req.body;
+
+  try {
+    const { rows } = await pool.query(
+      `
+      UPDATE userprofile
+      SET 
+        username = COALESCE($1, username),
+        email = COALESCE($2, email),
+        profile = COALESCE($3, profile)
+      WHERE id = $4
+      RETURNING id, username, email, profile;
+    `,
+      [username, email, profile, id]
+    );
+
+    res.status(200).json({
+      data: rows[0],
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error: "An error occurred while updating the profile",
+    });
+  }
+};
+// export const updateUserFavorites = async (req, res) => {
+//   const { id, favorite } = req.body;
+
+//   try {
+//     const { rows } = await pool.query(
+//       `
+//       UPDATE userprofile
+//       SET
+//         favorites = $1,
+
+//       WHERE id = $2
+//       RETURNING favorite;
+//     `,
+//       [favorite, id]
+//     );
+
+//     res.status(200).json({
+//       data: rows[0],
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({
+//       error: "An error occurred while updating the profile",
+//     });
+//   }
+// };
+
+export const updateUserFavorites = async (req, res) => {
+  const { id, favorite } = req.body;
+  console.log(favorite);
+  try {
+    const { rows } = await pool.query(
+      `
+      UPDATE userprofile
+      SET 
+        favorites = COALESCE(favorites, '[]'::jsonb) || $1::jsonb
+      WHERE id = $2
+      RETURNING favorites;
+    `,
+      [JSON.stringify([favorite]), id]
+    );
+
+    res.status(200).json({
+      data: rows[0],
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error: "An error occurred while updating the profile",
+    });
+  }
+};
+
+export const removeUserFavorite = async (req, res) => {
+  const { id, favoriteId } = req.body;
+
+  try {
+    // Remove the favorite
+    const { rows } = await pool.query(
+      `
+      UPDATE userprofile
+      SET 
+        favorites = (
+          SELECT json_agg(favorite)
+          FROM (
+            SELECT favorite
+            FROM jsonb_array_elements(favorites) AS favorite
+            WHERE favorite->>'id' <> $1
+          ) AS favorites
+        )
+      WHERE id = $2
+      RETURNING favorites;
+    `,
+      [favoriteId, id]
+    );
+
+    res.status(200).json({
+      data: rows[0],
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error: "An error occurred while updating the profile",
+    });
+  }
+};
