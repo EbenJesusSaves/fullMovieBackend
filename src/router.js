@@ -12,7 +12,7 @@ const router = Router();
 //   updateProduct
 // );
 router.post("/comment/", comment);
-router.get("/getComments", getUserComment);
+router.get("/getComments/:movie_id", getUserComment);
 
 //---------------update ------------------//
 

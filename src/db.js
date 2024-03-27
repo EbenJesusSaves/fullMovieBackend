@@ -110,6 +110,7 @@ export const comment = async (req, res, next) => {
 // get user comments
 
 export const getUserComment = async (req, res, next) => {
+  console.log(req);
   try {
     const { rows } = await pool.query(
       `SELECT 
@@ -125,7 +126,7 @@ export const getUserComment = async (req, res, next) => {
           u on u.id =  c.comment_id
         WHERE c.movie_id = $1;
      `,
-      [req.body.movie_id]
+      [req.params.movie_id]
     );
 
     res.status(200).json({
