@@ -8,8 +8,8 @@ const pool = new pg.Pool({
   connectionString: process.env.connectionString,
 });
 
+// adding users to database
 export const addUser = async (req, res) => {
-  console.log(req.body.username);
   try {
     const { rows } = await pool.query(
       `
@@ -77,21 +77,55 @@ export const signIn = async (req, res, next) => {
   } catch (error) {}
 };
 export const comment = async (req, res, next) => {
+  console.log(req);
   try {
     const { rows } = await pool.query(
       `INSERT INTO comments 
       (
-       
         booy,
-        comment_id
+        comment_id, 
+        movie_id
       ) 
       VALUES (
           $1,
-          $2
+          $2,
+          $3
          
       )
-      RETURNING * ; `,
-      [req.body.text, req.body.user_id]
+      RETURNING * ;`,
+      [req.body.text, req.body.user_id, req.body.movie_id]
+    );
+
+    res.status(200).json({
+      data: { rows },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      data: error,
+    });
+  }
+};
+
+// get user comments
+
+export const getUserComment = async (req, res, next) => {
+  try {
+    const { rows } = await pool.query(
+      `SELECT 
+          c.booy, 
+          c.date_created, 
+          c.comment_id, 
+          c.movie_id, 
+          u.username 
+        FROM comments 
+          c 
+        INNER JOIN 
+        userprofile 
+          u on u.id =  c.comment_id
+        WHERE c.movie_id = $1;
+     `,
+      [req.body.movie_id]
     );
 
     res.status(200).json({

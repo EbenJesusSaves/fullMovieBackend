@@ -2,7 +2,7 @@ import { Router } from "express";
 // import { body, validationResult } from "express-validator";
 // import { inputValidators } from "./modules/middleware";
 
-import { comment } from "./db.js";
+import { comment, getUserComment } from "./db.js";
 const router = Router();
 
 // router.put(
@@ -12,7 +12,7 @@ const router = Router();
 //   updateProduct
 // );
 router.post("/comment/", comment);
-router.delete("/product/:id", () => {});
+router.get("/getComments", getUserComment);
 
 //---------------update ------------------//
 
