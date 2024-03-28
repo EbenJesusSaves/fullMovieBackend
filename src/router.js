@@ -2,7 +2,13 @@ import { Router } from "express";
 // import { body, validationResult } from "express-validator";
 // import { inputValidators } from "./modules/middleware";
 
-import { comment } from "./db.js";
+import {
+  comment,
+  getUserComment,
+  removeUserFavorite,
+  updateUserFavorites,
+  updateUserProfile,
+} from "./db.js";
 const router = Router();
 
 // router.put(
@@ -12,12 +18,13 @@ const router = Router();
 //   updateProduct
 // );
 router.post("/comment/", comment);
-router.delete("/product/:id", () => {});
+router.get("/getComments/:movie_id", getUserComment);
 
 //---------------update ------------------//
+router.put("/updateUserProfile", updateUserProfile);
+router.patch("/updateFavorite/", updateUserFavorites);
+router.patch("/removeFavorite/", removeUserFavorite);
 
-router.get("/update", () => {});
-router.get("/update/:id", () => {});
 router.put("/update/:id", () => {});
 router.post("/update/", () => {});
 router.delete("/update/:id", () => {});
