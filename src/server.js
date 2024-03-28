@@ -3,6 +3,7 @@ import morgan from "morgan";
 import { addUser, signIn } from "./db.js";
 import { protect } from "./modules/auth.js";
 import router from "./router.js";
+import { stringValidator } from "./middleware/validators.js";
 
 const app = express();
 
@@ -18,5 +19,5 @@ app.get("/", (req, res) => {
 export default app;
 
 app.use("/api", protect, router);
-app.post("/createUser", addUser);
-app.post("/signIn", signIn);
+app.post("/createUser", stringValidator(), addUser);
+app.post("/signIn", validateSignin(), signIn);
