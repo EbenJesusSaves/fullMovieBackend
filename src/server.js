@@ -3,7 +3,7 @@ import morgan from "morgan";
 import { addUser, signIn } from "./db.js";
 import { protect } from "./modules/auth.js";
 import router from "./router.js";
-import { stringValidator } from "./middleware/validators.js";
+import { stringValidator, validateSignin } from "./middleware/validators.js";
 
 const app = express();
 

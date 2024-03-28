@@ -58,6 +58,10 @@ export const addUser = async (req, res, next) => {
 };
 
 export const signIn = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!result.isEmpty()) {
+    return res.status(422).json({ errors });
+  }
   try {
     const { rows } = await pool.query(
       ` SELECT * FROM userprofile WHERE username =$1;`,
