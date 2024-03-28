@@ -2,6 +2,7 @@
 import pg from "pg";
 import * as dotenv from "dotenv";
 import { comparePasswords, createJWT, hashPassword } from "./modules/auth.js";
+import { validationResult } from "express-validator";
 dotenv.config();
 
 const pool = new pg.Pool({
@@ -9,7 +10,12 @@ const pool = new pg.Pool({
 });
 
 // adding users to database
-export const addUser = async (req, res) => {
+export const addUser = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!result.isEmpty()) {
+    return res.status(422).json({ errors });
+  }
+
   try {
     const { rows } = await pool.query(
       `
