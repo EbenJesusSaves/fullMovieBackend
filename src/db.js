@@ -59,7 +59,7 @@ export const addUser = async (req, res, next) => {
 
 export const signIn = async (req, res, next) => {
   const errors = validationResult(req);
-  if (!result.isEmpty()) {
+  if (!errors.isEmpty()) {
     return res.status(422).json({ errors });
   }
   try {
