@@ -67,6 +67,9 @@ export const signIn = async (req, res, next) => {
       ` SELECT * FROM userprofile WHERE username =$1;`,
       [req.body.username]
     );
+    console.log(rows);
+    if (!rows.length)
+      return res.status(401).json({ message: "wrong username or password" });
 
     const isValid = await comparePasswords(req.body.password, rows[0].password);
 
@@ -87,7 +90,6 @@ export const signIn = async (req, res, next) => {
   } catch (error) {}
 };
 export const comment = async (req, res, next) => {
-  console.log(req);
   try {
     const { rows } = await pool.query(
       `INSERT INTO comments 
