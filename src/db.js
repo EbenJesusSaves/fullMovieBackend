@@ -161,14 +161,14 @@ export const updateUserProfile = async (req, res) => {
       UPDATE userprofile
       SET 
         username = COALESCE($1, username),
-        email = COALESCE($2, email),
-        profile = COALESCE($3, profile)
-      WHERE id = $4
+        
+        profile = COALESCE($2, profile)
+      WHERE id = $3
       RETURNING id, username, email, profile;
     `,
-      [username, email, profile, id]
+      [username, profile, id]
     );
-
+    console.log(rows);
     res.status(200).json({
       data: rows[0],
     });
