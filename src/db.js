@@ -81,6 +81,7 @@ export const signIn = async (req, res, next) => {
     const token = createJWT(rows[0]);
     res.json({
       data: {
+        id: rows[0].id,
         username: rows[0].username,
         email: rows[0].email,
         profile: rows[0].profile,
